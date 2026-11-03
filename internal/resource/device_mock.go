@@ -44,6 +44,9 @@ var _ Device = &DeviceMock{}
 //			GetTotalMemoryMiBFunc: func() (uint64, error) {
 //				panic("mock out the GetTotalMemoryMiB method")
 //			},
+//			GetVGPULicenseFunc: func() (*VGPULicense, error) {
+//				panic("mock out the GetVGPULicense method")
+//			},
 //			IsFabricAttachedFunc: func() (bool, error) {
 //				panic("mock out the IsFabricAttached method")
 //			},
@@ -87,6 +90,9 @@ type DeviceMock struct {
 	// GetTotalMemoryMiBFunc mocks the GetTotalMemoryMiB method.
 	GetTotalMemoryMiBFunc func() (uint64, error)
 
+	// GetVGPULicenseFunc mocks the GetVGPULicense method.
+	GetVGPULicenseFunc func() (*VGPULicense, error)
+
 	// IsFabricAttachedFunc mocks the IsFabricAttached method.
 	IsFabricAttachedFunc func() (bool, error)
 
@@ -125,6 +131,9 @@ type DeviceMock struct {
 		// GetTotalMemoryMiB holds details about calls to the GetTotalMemoryMiB method.
 		GetTotalMemoryMiB []struct {
 		}
+		// GetVGPULicense holds details about calls to the GetVGPULicense method.
+		GetVGPULicense []struct {
+		}
 		// IsFabricAttached holds details about calls to the IsFabricAttached method.
 		IsFabricAttached []struct {
 		}
@@ -144,6 +153,7 @@ type DeviceMock struct {
 	lockGetName                            sync.RWMutex
 	lockGetPCIClass                        sync.RWMutex
 	lockGetTotalMemoryMiB                  sync.RWMutex
+	lockGetVGPULicense                     sync.RWMutex
 	lockIsFabricAttached                   sync.RWMutex
 	lockIsMigCapable                       sync.RWMutex
 	lockIsMigEnabled                       sync.RWMutex
@@ -389,6 +399,33 @@ func (mock *DeviceMock) GetTotalMemoryMiBCalls() []struct {
 	mock.lockGetTotalMemoryMiB.RLock()
 	calls = mock.calls.GetTotalMemoryMiB
 	mock.lockGetTotalMemoryMiB.RUnlock()
+	return calls
+}
+
+// GetVGPULicense calls GetVGPULicenseFunc.
+func (mock *DeviceMock) GetVGPULicense() (*VGPULicense, error) {
+	if mock.GetVGPULicenseFunc == nil {
+		panic("DeviceMock.GetVGPULicenseFunc: method is nil but Device.GetVGPULicense was just called")
+	}
+	callInfo := struct {
+	}{}
+	mock.lockGetVGPULicense.Lock()
+	mock.calls.GetVGPULicense = append(mock.calls.GetVGPULicense, callInfo)
+	mock.lockGetVGPULicense.Unlock()
+	return mock.GetVGPULicenseFunc()
+}
+
+// GetVGPULicenseCalls gets all the calls that were made to GetVGPULicense.
+// Check the length with:
+//
+//	len(mockedDevice.GetVGPULicenseCalls())
+func (mock *DeviceMock) GetVGPULicenseCalls() []struct {
+} {
+	var calls []struct {
+	}
+	mock.lockGetVGPULicense.RLock()
+	calls = mock.calls.GetVGPULicense
+	mock.lockGetVGPULicense.RUnlock()
 	return calls
 }
 

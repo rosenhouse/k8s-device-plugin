@@ -85,6 +85,8 @@ func NewDeviceLabeler(manager resource.Manager, config *spec.Config) (Labeler, e
 		return nil, fmt.Errorf("error creating IMEX labeler: %v", err)
 	}
 
+	vgpuLicenseLabeler := newVGPULicenseLabeler(devices)
+
 	l := Merge(
 		machineTypeLabeler,
 		versionLabeler,
@@ -93,6 +95,7 @@ func NewDeviceLabeler(manager resource.Manager, config *spec.Config) (Labeler, e
 		resourceLabeler,
 		gpuModeLabeler,
 		imexLabeler,
+		vgpuLicenseLabeler,
 	)
 
 	return l, nil

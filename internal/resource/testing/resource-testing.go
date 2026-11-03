@@ -55,6 +55,7 @@ func NewDeviceMock(migEnabled bool) *DeviceMock {
 		IsMigCapableFunc:      func() (bool, error) { return migEnabled, nil },
 		GetMigDevicesFunc:     func() ([]resource.Device, error) { return nil, nil },
 		GetPCIClassFunc:       func() (uint32, error) { return 0, nil },
+		GetVGPULicenseFunc:    func() (*resource.VGPULicense, error) { return nil, nil },
 	}}
 	return &d
 }

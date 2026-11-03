@@ -80,3 +80,8 @@ func (d vfioDevice) IsFabricAttached() (bool, error) {
 func (d vfioDevice) GetFabricIDs() (string, string, error) {
 	return "", "", fmt.Errorf("GetFabricIDs is not supported for vfio devices")
 }
+
+// GetVGPULicense always returns nil for GPU devices with vfio pci driver.
+func (d vfioDevice) GetVGPULicense() (*VGPULicense, error) {
+	return nil, nil
+}

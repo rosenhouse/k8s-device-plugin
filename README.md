@@ -633,6 +633,8 @@ along with their use. See the related table [here](/docs/gpu-feature-discovery/R
 | nvidia.com/vgpu.present             | Specifies if devices on the node use vGPU.                                                                                                                                                                                                   | false          |
 | nvidia.com/vgpu.host-driver-branch  | Specifies the vGPU host driver branch on the underlying hypervisor.                                                                                                                                                                          | r550_40        |
 | nvidia.com/vgpu.host-driver-version | Specifies the vGPU host driver version on the underlying hypervisor.                                                                                                                                                                         | 550.54.16      |
+| nvidia.com/vgpu.license.status      | Specifies the node's vGPU software license status: `licensed`, `unlicensed` or `unknown`. An unlicensed vGPU makes the node `unlicensed`; otherwise a failed query makes it `unknown`. The label is absent if no vGPU supports licensing.    | licensed       |
+| nvidia.com/vgpu.license.product     | Specifies the licensed vGPU software product. The label is absent unless the status is `licensed` and all vGPUs report the same product.                                                                                                     | NVIDIA-Virtual-Compute-Server |
 
 ## Deployment via `helm`
 
