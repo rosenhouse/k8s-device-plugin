@@ -155,3 +155,8 @@ func (d nvmlMigDevice) IsFabricAttached() (bool, error) {
 func (d nvmlMigDevice) GetFabricIDs() (string, string, error) {
 	return "", "", fmt.Errorf("GetFabricIDs is not supported for MIG devices")
 }
+
+// GetVGPULicense is not supported for MIG devices
+func (d nvmlMigDevice) GetVGPULicense() (*VGPULicense, error) {
+	return nil, fmt.Errorf("GetVGPULicense is not supported for MIG devices")
+}

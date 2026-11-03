@@ -290,3 +290,25 @@ func TestGPUModeLabeler(t *testing.T) {
 		})
 	}
 }
+
+func TestDeviceLabelerIncludesVGPULicense(t *testing.T) {
+	device := rt.NewDeviceMock(false)
+	device.GetVGPULicenseFunc = func() (*resource.VGPULicense, error) {
+		return &resource.VGPULicense{}, nil
+	}
+	config := &spec.Config{
+		Flags: spec.Flags{
+			CommandLineFlags: spec.CommandLineFlags{
+				MigStrategy: new(spec.MigStrategyNone),
+				GFD:         &spec.GFDCommandLineFlags{MachineTypeFile: new("")},
+			},
+		},
+	}
+
+	labeler, err := NewDeviceLabeler(rt.NewManagerMockWithDevices(device), config)
+	require.NoError(t, err)
+
+	labels, err := labeler.Labels()
+	require.NoError(t, err)
+	require.Equal(t, "unlicensed", labels["nvidia.com/vgpu.license.status"])
+}

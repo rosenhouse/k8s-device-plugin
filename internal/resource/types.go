@@ -43,4 +43,12 @@ type Device interface {
 	GetArchitecture() (string, error)
 	GetPCIClass() (uint32, error)
 	GetFabricIDs() (string, string, error)
+	GetVGPULicense() (*VGPULicense, error)
+}
+
+// VGPULicense is the vGPU software license state of a vGPU guest.
+type VGPULicense struct {
+	Licensed bool
+	// Product is the licensed product, or empty if Licensed is false.
+	Product string
 }

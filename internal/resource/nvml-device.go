@@ -127,3 +127,50 @@ func (d nvmlDevice) GetFabricIDs() (string, string, error) {
 
 	return clusterUUID.String(), cliqueId, nil
 }
+
+// GetVGPULicense returns the vGPU software license of a vGPU guest. It returns
+// nil if the device is not a vGPU guest or its driver does not support licensing.
+func (d nvmlDevice) GetVGPULicense() (*VGPULicense, error) {
+	mode, ret := d.GetVirtualizationMode()
+	if ret == nvml.ERROR_NOT_SUPPORTED {
+		return nil, nil
+	}
+	if ret != nvml.SUCCESS {
+		return nil, fmt.Errorf("failed to get virtualization mode: %w", ret)
+	}
+	// Only vGPU guests are reported, because pass-through and bare-metal GPUs
+	// can be licensed by EULA alone.
+	if mode != nvml.GPU_VIRTUALIZATION_MODE_VGPU {
+		return nil, nil
+	}
+
+	features, ret := d.GetGridLicensableFeatures()
+	if ret == nvml.ERROR_NOT_SUPPORTED {
+		return nil, nil
+	}
+	if ret != nvml.SUCCESS {
+		return nil, fmt.Errorf("failed to get vGPU licensable features: %w", ret)
+	}
+	if features.IsGridLicenseSupported == 0 {
+		return nil, nil
+	}
+
+	count := min(int(features.LicensableFeaturesCount), len(features.GridLicensableFeatures))
+	for _, feature := range features.GridLicensableFeatures[:count] {
+		if feature.FeatureState != 0 {
+			return &VGPULicense{Licensed: true, Product: nullTerminatedIntSliceToString(feature.ProductName[:])}, nil
+		}
+	}
+	return &VGPULicense{}, nil
+}
+
+func nullTerminatedIntSliceToString[T int8 | uint8](s []T) string {
+	var b []byte
+	for _, c := range s {
+		if c == 0 {
+			break
+		}
+		b = append(b, byte(c))
+	}
+	return string(b)
+}

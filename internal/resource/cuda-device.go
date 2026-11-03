@@ -113,3 +113,8 @@ func (d *cudaDevice) IsFabricAttached() (bool, error) {
 func (d *cudaDevice) GetFabricIDs() (string, string, error) {
 	return "", "", fmt.Errorf("GetFabricIDs is not supported for CUDA devices")
 }
+
+// GetVGPULicense always returns nil for CUDA devices
+func (d *cudaDevice) GetVGPULicense() (*VGPULicense, error) {
+	return nil, nil
+}
